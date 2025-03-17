@@ -98,10 +98,25 @@ def generate_interview_questions(skills, experience_level, complexity, num_quest
             },
         )
         chat_session = model.start_chat()
+        
+        # Modified prompt with pre-screening focus for basic complexity
+        complexity_instruction = ""
+        if complexity == "Basic":
+            complexity_instruction = (
+                "pre-screening level. Questions should be extremely basic, focusing on fundamental "
+                "terminology and concepts that any qualified candidate must know. These questions "
+                "should help quickly identify candidates who lack essential knowledge."
+            )
+        elif complexity == "Intermediate":
+            complexity_instruction = "intermediate level, suitable for main interview assessment"
+        else:  # Advanced
+            complexity_instruction = "advanced level, suitable for experienced specialists"
+            
         prompt = (
             f"Generate {num_questions} interview questions and answers for a professional "
             f"with skills: {', '.join(skills)}, "
-            f"{experience_level} years of experience. Questions should be of {complexity} complexity."
+            f"{experience_level} years of experience. Questions should be of {complexity_instruction} "
+            f"Format each question and answer clearly, with the question first followed by the answer."
         )
         response = chat_session.send_message(prompt)
         return response.text.strip()
